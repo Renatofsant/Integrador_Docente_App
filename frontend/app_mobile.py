@@ -2,7 +2,7 @@ import flet as ft
 import requests
 
 # URL raiz do seu backend FastAPI (mude para o link do Render quando subir o app.py para lá)
-API_URL = "http://192.168.0.107:8000"
+API_URL = "https://integrador-docente-app.onrender.com"
 
 
 def main(page: ft.Page):
