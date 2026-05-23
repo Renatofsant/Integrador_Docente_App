@@ -1,0 +1,120 @@
+{
+    "tabelas_encontradas": {
+        "alunos": {
+            "id": "integer",
+            "escola_id": "integer",
+            "nome_completo": "character varying",
+            "matricula": "character varying",
+            "turma": "character varying",
+            "status": "character varying"
+        },
+        "escolas": {
+            "id": "integer",
+            "nome": "character varying",
+            "vinculo_login": "character varying"
+        },
+        "notas_bimestre": {
+            "id": "integer",
+            "aluno_id": "integer",
+            "bimestre": "integer",
+            "av1": "numeric",
+            "av2": "numeric",
+            "av3": "numeric",
+            "faltas": "integer",
+            "enviado_portal": "boolean",
+            "data_atualizacao": "timestamp without time zone",
+            "media_final": "numeric",
+            "trimestre": "integer",
+            "recuperacao": "numeric"
+        }
+    },
+    "amostra_dados": {
+        "alunos": [
+            {
+                "id": "48",
+                "escola_id": "1",
+                "nome_completo": "BEATRIZ MARTINS DE MAGALHAES",
+                "matricula": "None",
+                "turma": "1003",
+                "status": "Inativo"
+            },
+            {
+                "id": "3",
+                "escola_id": "1",
+                "nome_completo": "DAVI DE OLIVEIRA MACEDO",
+                "matricula": "None",
+                "turma": "3001",
+                "status": "Inativo"
+            },
+            {
+                "id": "53",
+                "escola_id": "1",
+                "nome_completo": "GERALDO MACIEL DA SILVA",
+                "matricula": "None",
+                "turma": "1003",
+                "status": "Ativo"
+            }
+        ],
+        "escolas": [
+            {
+                "id": "1",
+                "nome": "Agripino",
+                "vinculo_login": "5593336/4"
+            },
+            {
+                "id": "2",
+                "nome": "Nazareth",
+                "vinculo_login": "5593336/3"
+            },
+            {
+                "id": "3",
+                "nome": "Pernambuco",
+                "vinculo_login": "5593336/4"
+            }
+        ],
+        "notas_bimestre": [
+            {
+                "id": "606",
+                "aluno_id": "7",
+                "bimestre": "None",
+                "av1": "5.00",
+                "av2": "0.00",
+                "av3": "0.00",
+                "faltas": "0",
+                "enviado_portal": "False",
+                "data_atualizacao": "2026-05-10 14:44:40.638884",
+                "media_final": "5.00",
+                "trimestre": "1",
+                "recuperacao": "0.0"
+            },
+            {
+                "id": "608",
+                "aluno_id": "10",
+                "bimestre": "None",
+                "av1": "5.00",
+                "av2": "0.00",
+                "av3": "0.00",
+                "faltas": "0",
+                "enviado_portal": "False",
+                "data_atualizacao": "2026-05-10 14:44:40.638884",
+                "media_final": "5.00",
+                "trimestre": "1",
+                "recuperacao": "0.0"
+            },
+            {
+                "id": "612",
+                "aluno_id": "17",
+                "bimestre": "None",
+                "av1": "5.00",
+                "av2": "0.00",
+                "av3": "0.00",
+                "faltas": "0",
+                "enviado_portal": "False",
+                "data_atualizacao": "2026-05-10 14:44:40.638884",
+                "media_final": "5.00",
+                "trimestre": "1",
+                "recuperacao": "0.0"
+            }
+        ]
+    }
+}
