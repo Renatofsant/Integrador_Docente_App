@@ -3,5 +3,5 @@ uvicorn==0.28.0
 selenium==4.18.1
 webdriver-manager==4.0.1
 psycopg2-binary==2.9.9
-pydantic==2.6.4
+pydantic==1.10.15
 requests==2.31.0
