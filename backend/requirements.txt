@@ -1,7 +1,7 @@
-fastapi==0.110.0
-uvicorn==0.28.0
-selenium==4.18.1
-webdriver-manager==4.0.1
-psycopg2-binary==2.9.9
-pydantic==1.10.15
-requests==2.31.0
+fastapi>=0.100.0
+pydantic==1.10.11
+uvicorn>=0.22.0
+requests>=2.31.0
+psycopg2-binary>=2.9.6
+selenium>=4.10.0
+webdriver-manager>=4.0.0
