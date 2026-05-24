@@ -33,7 +33,7 @@ class LancamentoRequest(BaseModel):
 
 # --- ROTAS DA API ---
 
-@app.post("/conectar")
+@app.post("/abrir_portal")
 def conectar_portal(req: ConectarRequest):
     try:
         session_id = str(uuid.uuid4())
