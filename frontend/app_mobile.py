@@ -1,7 +1,7 @@
 import flet as ft
 import requests
 
-# URL raiz do seu backend FastAPI (mude para o link do Render quando subir o app.py para lá)
+# URL raiz do seu backend FastAPI hospedado no Render
 API_URL = "https://integrador-docente-app.onrender.com"
 
 
@@ -143,7 +143,7 @@ def main(page: ft.Page):
         ft.Container(
             content=lbl_status,
             padding=15,
-            border=ft.border.all(1, "#3b82f6"),
+            border=ft.Border.all(1, "#3b82f6"),
             border_radius=8,
             width=320,
             bgcolor="#1e1e2e"
@@ -177,8 +177,8 @@ def main(page: ft.Page):
         selected_index=0,
         animation_duration=300,
         tabs=[
-            ft.Tab(text="1. Autenticação", icon=ft.icons.LOCK_OPEN, content=aba_login),
-            ft.Tab(text="2. Lançamento", icon=ft.icons.AUTO_STORIES, content=aba_lancamento),
+            ft.Tab(text="1. Autenticação", icon="lock_open", content=aba_login),
+            ft.Tab(text="2. Lançamento", icon="auto_stories", content=aba_lancamento),
         ],
         expand=1
     )
@@ -188,5 +188,6 @@ def main(page: ft.Page):
     page.update()
 
 
+# LINHA FINAL CORRIGIDA: Fechamento padrão do interpretador Python para o Flet
 if __name__ == "__main__":
     ft.app(target=main)
