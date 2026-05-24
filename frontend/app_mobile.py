@@ -28,7 +28,7 @@ def main(page: ft.Page):
     lbl_status = ft.Text(value="Pronto para iniciar o integrador.", color="gray400", size=14,
                          text_align=ft.TextAlign.CENTER)
 
-    # Parâmetros da Pauta (Aba 2)
+    # Parâmetros da Pauta (Tela 2)
     txt_turma = ft.TextField(label="Número da Turma", value="1003", width=320, border_color="#3b82f6")
     txt_trimestre = ft.Dropdown(
         label="Trimestre",
@@ -55,7 +55,6 @@ def main(page: ft.Page):
         page.update()
 
         try:
-            # Rota '/conectar' casando estritamente com o backend do seu Render
             res = requests.post(f"{API_URL}/conectar", json={
                 "usuario_sgi": txt_user_sgi.value.strip(),
                 "escola_id": estado["escola_id"]
@@ -66,7 +65,7 @@ def main(page: ft.Page):
                 estado["session_id"] = dados["session_id"]
                 estado["usuario_sgi"] = txt_user_sgi.value.strip()
 
-                lbl_status.value = "✅ Navegador aberto! Faça o login no celular e mude para a aba 'Lançamento'."
+                lbl_status.value = "✅ Navegador aberto! Faça o login no celular e clique no botão 'Módulo Lançamento' no topo."
                 lbl_status.color = "green400"
 
                 # Abre o portal de forma nativa no navegador do celular como tela de apoio
@@ -82,7 +81,7 @@ def main(page: ft.Page):
     def iniciar_injecao_notas(e):
         """Passo 2: O usuário já está na pauta, o celular ordena o disparo baseado no Render"""
         if not estado["session_id"]:
-            lbl_status.value = "⚠️ Primeiramente, execute a conexão na Aba 'Autenticação'."
+            lbl_status.value = "⚠️ Primeiramente, execute a conexão na Tela de 'Autenticação'."
             lbl_status.color = "red400"
             page.update()
             return
@@ -118,9 +117,9 @@ def main(page: ft.Page):
             lbl_status.color = "red400"
         page.update()
 
-    # --- RENDERIZADORES DE INTERFACE (ESTRUTURA INDESTRUTÍVEL) ---
+    # --- RENDERIZADORES DE INTERFACE ---
 
-    # Conteúdo da Aba 1: Autenticação Inicial
+    # Conteúdo da Tela 1: Autenticação Inicial
     aba_login = ft.Column([
         ft.Container(height=10),
         ft.Text("⚡ PROJETTA SGI", size=26, weight=ft.FontWeight.BOLD, color="#3b82f6"),
@@ -150,7 +149,7 @@ def main(page: ft.Page):
         )
     ], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
 
-    # Conteúdo da Aba 2: Configuração e Injeção
+    # Conteúdo da Tela 2: Configuração e Injeção
     aba_lancamento = ft.Column([
         ft.Container(height=10),
         ft.Text("🚀 INJEÇÃO EM LOTE", size=22, weight=ft.FontWeight.BOLD, color="#10b981"),
@@ -172,34 +171,34 @@ def main(page: ft.Page):
         )
     ], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
 
-    # Componente dinâmico que gerencia a troca de telas sem quebrar as Tabs
+    # Componente dinâmico principal que gerencia o que está na tela
     conteudo_dinamico = ft.Container(content=aba_login, expand=True)
 
-    def mudar_aba(e):
-        if e.control.selected_index == 0:
-            conteudo_dinamico.content = aba_login
-        elif e.control.selected_index == 1:
-            conteudo_dinamico.content = aba_lancamento
+    # Funções de alternância de tela disparadas pelos botões superiores
+    def mostrar_tela_login(e):
+        btn_nav_login.bgcolor = "#3b82f6"
+        btn_nav_lancar.bgcolor = "#2d2d3d"
+        conteudo_dinamico.content = aba_login
         page.update()
 
-    # Configuração das abas usando propriedades universais compatíveis (text/icon)
-    tabs_sistema = ft.Tabs(
-        selected_index=0,
-        animation_duration=300,
-        on_change=mudar_aba,
-        tabs=[
-            ft.Tab(text="1. Autenticação", icon="lock_open"),
-            ft.Tab(text="2. Lançamento", icon="auto_stories"),
-        ]
-    )
+    def mostrar_tela_lancar(e):
+        btn_nav_login.bgcolor = "#2d2d3d"
+        btn_nav_lancar.bgcolor = "#10b981"
+        conteudo_dinamico.content = aba_lancamento
+        page.update()
 
-    # Montagem final da tela
+    # Botões de Navegação customizados (Substitutos perfeitos das abas quebradas)
+    btn_nav_login = ft.ElevatedButton("1. Conexão", on_click=mostrar_tela_login, bgcolor="#3b82f6", color="white", width=150, height=40)
+    btn_nav_lancar = ft.ElevatedButton("2. Lançar", on_click=mostrar_tela_lancar, bgcolor="#2d2d3d", color="white", width=150, height=40)
+
+    # Layout de topo contendo os botões de controle
+    menu_superior = ft.Row([btn_nav_login, btn_nav_lancar], alignment=ft.MainAxisAlignment.CENTER, width=320)
+
+    # Adiciona a estrutura limpa direto na página sem Columns ou Tabs instáveis
     page.add(
-        ft.Column([
-            tabs_sistema,
-            ft.Divider(height=10, color="transparent"),
-            conteudo_dinamico
-        ], expand=True)
+        menu_superior,
+        ft.Divider(height=15, color="transparent"),
+        conteudo_dinamico
     )
     page.update()
 
