@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel  # CORREÇÃO CRÍTICA: Forçando compatibilidade v1 para matar o erro do Render
 from motor_seeduc import MotorSEEDUC
 import uuid
 import psycopg2
@@ -33,7 +33,8 @@ class LancamentoRequest(BaseModel):
 
 # --- ROTAS DA API ---
 
-@app.post("/abrir_portal")
+# SINCRONIZADO: Alterado de '/abrir_portal' para '/conectar' para casar com o botão azul do celular
+@app.post("/conectar")
 def conectar_portal(req: ConectarRequest):
     try:
         session_id = str(uuid.uuid4())
@@ -116,8 +117,6 @@ def iniciar_lancamento(req: LancamentoRequest, background_tasks: BackgroundTasks
     return {"status": "processando", "msg": f"O robô iniciou o lançamento de {len(lista_alunos)} alunos."}
 
 def executar_fluxo_completo(robo, session_id, turma, previstas, dadas, checkbox, lista_alunos):
-    # Mantido o nome com 'j' temporariamente para casar estritamente com sua chamada antiga interna se preferir,
-    # mas recomendo usar 'executar_fluxo_completo' para alinhar com o add_task acima.
     try:
         robo.preencher_cabecalho_pauta(turma, previstas, dadas, checkbox)
         robo.lancar_notas_turma(lista_alunos)
