@@ -4,9 +4,12 @@ import requests
 # URL raiz do seu backend FastAPI hospedado no Render
 API_URL = "https://integrador-docente-app.onrender.com"
 
+# URL pública direta do seu robô PNG para carregamento universal no celular
+URL_ROBO = "https://assets.zyrosite.com/A85219vlv1fpqWDW/6-QW0AIgV87xDYSCXR.png"
+
 
 def main(page: ft.Page):
-    page.title = "PROJETTA - SGI Mobile Integrador"
+    page.title = "Integrador Docente Mobile"
     page.theme_mode = ft.ThemeMode.DARK
     page.padding = ft.Padding(top=50, left=20, right=20, bottom=20)
 
@@ -40,6 +43,10 @@ def main(page: ft.Page):
     txt_dadas = ft.TextField(label="Aulas Dadas", value="20", width=150, border_color="#3b82f6")
     chk_confirmar = ft.Checkbox(label="Autorizar Gravação Automática", value=True)
 
+    # Instanciando os componentes de imagem com a URL do seu robô real
+    img_robo_login = ft.Image(src=URL_ROBO, width=70, height=70, fit="contain")
+    img_robo_lancar = ft.Image(src=URL_ROBO, width=70, height=70, fit="contain")
+
     # --- LÓGICA DE EVENTOS ---
 
     def disparar_abertura_portal(e):
@@ -65,7 +72,7 @@ def main(page: ft.Page):
                 estado["session_id"] = dados["session_id"]
                 estado["usuario_sgi"] = txt_user_sgi.value.strip()
 
-                lbl_status.value = "✅ Navegador aberto! Faça o login no celular e clique no botão 'Módulo Lançamento' no topo."
+                lbl_status.value = "✅ Navegador aberto! Faça o login no celular e clique no botão '2. Lançar' no topo."
                 lbl_status.color = "green400"
 
                 # Abre o portal de forma nativa no navegador do celular como tela de apoio
@@ -122,7 +129,11 @@ def main(page: ft.Page):
     # Conteúdo da Tela 1: Autenticação Inicial
     aba_login = ft.Column([
         ft.Container(height=10),
-        ft.Text("⚡ PROJETTA SGI", size=26, weight=ft.FontWeight.BOLD, color="#3b82f6"),
+        # Linha do cabeçalho com o seu robô oficial centralizado e alinhado perfeitamente
+        ft.Row([
+            img_robo_login,
+            ft.Text("Integrador Docente", size=22, weight=ft.FontWeight.BOLD, color="#3b82f6")
+        ], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER, spacing=10),
         ft.Text("Módulo Lançador Mobile", size=14, color="gray400"),
         ft.Container(height=20),
         txt_user_sgi,
@@ -149,10 +160,14 @@ def main(page: ft.Page):
         )
     ], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
 
-    # Conteúdo da Tela 2: Configuração e Injeção
+    # Conteúdo da Tela 2: Configuração e Lançamento
     aba_lancamento = ft.Column([
         ft.Container(height=10),
-        ft.Text("🚀 INJEÇÃO EM LOTE", size=22, weight=ft.FontWeight.BOLD, color="#10b981"),
+        # Cabeçalho da pauta também estilizado com o seu robô
+        ft.Row([
+            img_robo_lancar,
+            ft.Text("INJEÇÃO EM LOTE", size=22, weight=ft.FontWeight.BOLD, color="#10b981")
+        ], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER, spacing=10),
         ft.Text("Configure os parâmetros da pauta aberta:", size=13, color="gray400"),
         ft.Container(height=15),
         txt_turma,
@@ -187,7 +202,7 @@ def main(page: ft.Page):
         conteudo_dinamico.content = aba_lancamento
         page.update()
 
-    # Botões de Navegação customizados (Substitutos perfeitos das abas quebradas)
+    # Botões de Navegação customizados
     btn_nav_login = ft.ElevatedButton("1. Conexão", on_click=mostrar_tela_login, bgcolor="#3b82f6", color="white", width=150, height=40)
     btn_nav_lancar = ft.ElevatedButton("2. Lançar", on_click=mostrar_tela_lancar, bgcolor="#2d2d3d", color="white", width=150, height=40)
 
@@ -204,4 +219,5 @@ def main(page: ft.Page):
 
 
 if __name__ == "__main__":
+    # Como o src agora é um link HTTP real da internet, removemos o assets_dir para evitar conflitos de cache local
     ft.app(target=main)
