@@ -55,8 +55,8 @@ def main(page: ft.Page):
         page.update()
 
         try:
-            # Envia a requisição para a rota correta do app.py
-            res = requests.post(f"{API_URL}/abrir_portal", json={
+            # Rota '/conectar' casando estritamente com o backend do seu Render
+            res = requests.post(f"{API_URL}/conectar", json={
                 "usuario_sgi": txt_user_sgi.value.strip(),
                 "escola_id": estado["escola_id"]
             })
@@ -66,7 +66,7 @@ def main(page: ft.Page):
                 estado["session_id"] = dados["session_id"]
                 estado["usuario_sgi"] = txt_user_sgi.value.strip()
 
-                lbl_status.value = "✅ Navegador aberto! Faça o login no PC ou celular e mude para a aba 'Lançamento'."
+                lbl_status.value = "✅ Navegador aberto! Faça o login no celular e mude para a aba 'Lançamento'."
                 lbl_status.color = "green400"
 
                 # Abre o portal de forma nativa no navegador do celular como tela de apoio
@@ -75,7 +75,7 @@ def main(page: ft.Page):
                 lbl_status.value = f"❌ Erro no motor: {res.json().get('detail')}"
                 lbl_status.color = "red400"
         except Exception as err:
-            lbl_status.value = "❌ Falha de conexão. O app.py está rodando?"
+            lbl_status.value = "❌ Falha de conexão. O backend no Render está ativo?"
             lbl_status.color = "red400"
         page.update()
 
@@ -118,7 +118,7 @@ def main(page: ft.Page):
             lbl_status.color = "red400"
         page.update()
 
-    # --- RENDERIZADORES DE INTERFACE (ESTRUTURA TANQUE DE GUERRA) ---
+    # --- RENDERIZADORES DE INTERFACE (ESTRUTURA INDESTRUTÍVEL) ---
 
     # Conteúdo da Aba 1: Autenticação Inicial
     aba_login = ft.Column([
@@ -172,22 +172,37 @@ def main(page: ft.Page):
         )
     ], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
 
-    # Organização das Abas Nativas (Blindadas contra quebras no Celular)
+    # Componente dinâmico que gerencia a troca de telas sem quebrar as Tabs
+    conteudo_dinamico = ft.Container(content=aba_login, expand=True)
+
+    def mudar_aba(e):
+        if e.control.selected_index == 0:
+            conteudo_dinamico.content = aba_login
+        elif e.control.selected_index == 1:
+            conteudo_dinamico.content = aba_lancamento
+        page.update()
+
+    # Configuração das abas usando propriedades universais compatíveis (text/icon)
     tabs_sistema = ft.Tabs(
         selected_index=0,
         animation_duration=300,
+        on_change=mudar_aba,
         tabs=[
-            ft.Tab(text="1. Autenticação", icon="lock_open", content=aba_login),
-            ft.Tab(text="2. Lançamento", icon="auto_stories", content=aba_lancamento),
-        ],
-        expand=1
+            ft.Tab(text="1. Autenticação", icon="lock_open"),
+            ft.Tab(text="2. Lançamento", icon="auto_stories"),
+        ]
     )
 
-    # Adiciona o contêiner mestre na tela
-    page.add(tabs_sistema)
+    # Montagem final da tela
+    page.add(
+        ft.Column([
+            tabs_sistema,
+            ft.Divider(height=10, color="transparent"),
+            conteudo_dinamico
+        ], expand=True)
+    )
     page.update()
 
 
-# LINHA FINAL CORRIGIDA: Fechamento padrão do interpretador Python para o Flet
 if __name__ == "__main__":
     ft.app(target=main)
