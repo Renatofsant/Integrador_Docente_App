@@ -12,9 +12,9 @@ URL_PORTAL = "https://docenteonline.educacao.rj.gov.br/"
 
 
 class MotorSEEDUC:
-    def __init__(self, usuario, escola_id):
+    def __init__(self, usuario, school_id): # Alterado de escola_id para school_id
         self.usuario = usuario
-        self.escola_id = escola_id
+        self.school_id = school_id
         self.driver = None
 
     def iniciar_navegador(self):
