@@ -1,18 +1,20 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
-from pydantic import BaseModel
+from pydantic import BaseModel, Field # Usando o módulo v2 nativo e seguro
 from motor_seeduc import MotorSEEDUC
 import uuid
 import psycopg2
 
 app = FastAPI(title="API Integrador Docente SEEDUC")
 
+# URL do seu banco no Render (Oregon)
 URL_RENDER = "postgresql://renato_admin:irFGr5xMmqjd18NyQCJOD1m9lapIC0Wr@dpg-d870b9ojo89c73d31dfg-a.oregon-postgres.render.com/integrador_docente_mobile"
 
+# Dicionário em memória para manter as sessões dos robôs ativas
 sessoes_ativas = {}
 
-# Garantindo tipagem primitiva explícita para evitar confusão no interpretador
+# --- MODELOS DE DADOS ATUALIZADOS (SINTAXE PYDANTIC V2) ---
 class ConectarRequest(BaseModel):
-    usuario_sgi: str
+    usuario_sgi: str = Field(..., min_length=1)
     escola_id: int
 
 class LoginRequest(BaseModel):
@@ -29,11 +31,13 @@ class LancamentoRequest(BaseModel):
     aulas_dadas: int
     confirmar_checkbox: bool
 
+# --- ROTAS DA API ---
+
 @app.post("/conectar")
 def conectar_portal(req: ConectarRequest):
     try:
         session_id = str(uuid.uuid4())
-        robo = MotorSEEDUC(usuario=str(req.usuario_sgi), escola_id=int(req.escola_id))
+        robo = MotorSEEDUC(usuario=str(req.usuario_sgi), school_id=int(req.escola_id))
         robo.iniciar_navegador()
 
         captcha_b64 = robo.capturar_captcha_base64()
@@ -83,21 +87,21 @@ def iniciar_lancamento(req: LancamentoRequest, background_tasks: BackgroundTasks
         cursor.close()
         conn.close()
 
-        if not linhas:
+        if not list(linhas):
             raise HTTPException(
                 status_code=404,
-                detail=f"Nenhum aluno ativo encontrado para a Turma {req.turma}."
+                detail=f"Nenhum aluno ativo encontrado para a Turma {req.turma} no {req.trimestre}º Trimestre."
             )
 
         lista_alunos = [
-            {"nome": l[0], "nota": float(l[1]), "faltas": int(l[2])}
+            {"nome": str(l[0]), "nota": float(l[1]), "faltas": int(l[2])}
             for l in linhas
         ]
 
     except HTTPException as http_err:
         raise http_err
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Erro ao consultar o banco no Render: {str(e)}")
 
     robo = sessoes_ativas[req.session_id]
 
@@ -113,7 +117,7 @@ def executar_fluxo_completo(robo, session_id, turma, previstas, dadas, checkbox,
         robo.preencher_cabecalho_pauta(turma, previstas, dadas, checkbox)
         robo.lancar_notas_turma(lista_alunos)
     except Exception as e:
-        print(f"Erro: {e}")
+        print(f"[ERRO NO FLUXO DO ROBÔ]: {e}")
     finally:
         robo.fechar()
         if session_id in sessoes_ativas:
